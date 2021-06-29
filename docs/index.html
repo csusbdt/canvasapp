@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title>Canvas App</title>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+			background-color: black;
+		}
+		#container_div {
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+		#g_canvas {
+			position: absolute;
+			padding: 0;
+			margin: 0;
+		}
+		img {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<!-- required elements: g_canvas and g_bg -->
+	<div id="g_container_div"><canvas id="g_canvas"></canvas></div>
+	
+	<img id="g_bg" src="images/bg.png" />
+
+	<img id="i_fullscreen_select"   src="images/fullscreen_select.png"   />
+	<img id="i_fullscreen_select_1" src="images/fullscreen_select_1.png" />
+	<img id="i_fullscreen_select_2" src="images/fullscreen_select_2.png" />
+	<img id="i_fullscreen_select_3" src="images/fullscreen_select_3.png" />
+
+	<audio id="s_thud"  src="sounds/thud.mp3"  preload="auto"></audio>
+	<audio id="s_click" src="sounds/click.mp3" preload="auto"></audio>
+	<audio id="s_blop"  src="sounds/blop.mp3"  preload="auto"></audio>
+	<audio id="s_tick"  src="sounds/tick.mp3"  preload="auto"></audio>
+
+	<script type="module" src="index.js"></script>
+</body>
+</html>

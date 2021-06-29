@@ -4,6 +4,45 @@ const log = function(...args) {
 	args.forEach(arg => console.log(arg));
 };
 
+function stop_start(o) {
+	o.stop_set.forEach(o => o.stop());
+	o.start_set.forEach(o => {
+		if (typeof(o) === 'function') {
+			o();
+		} else if ('play' in o) {
+			o.play();
+		} else {
+			o.start();
+		}
+	});	
+};
+
+// const next = function(url) {
+// //	return () => setTimeout(() => window.location.href = url, 250);
+// 	return () => setTimeout(() => window.location.assign(url), 250);
+// };
+
+// const back = function(url) {
+// 	return () => setTimeout(() => window.history.back(), 250);
+// };
+			
+// const replace = function(url) {
+// 	return () => setTimeout(() => window.location.href = url, 250);
+// };
+
+// const goto = function(url) {
+// 	return () => setTimeout(() => window.location.href = url, 250);
+// };
+
+// const goto = function(url) {
+// 	return () => setTimeout(() => window.location.href = url, 250);
+// };
+
+
+//#endregion
+
+//#region fullscreen
+
 const fullscreen = function() {
 	if ('fullscreenElement' in document) {
 		return document.fullscreenElement === g_canvas;
@@ -29,48 +68,47 @@ const fullscreen_enabled = function() {
 
 const request_fullscreen = function() {
 	if ('requestFullscreen' in g_canvas) {
-		g_canvas.requestFullscreen();
+		return g_canvas.requestFullscreen();
 	} else if ('webkitRequestFullscreen' in g_canvas) {
-		g_canvas.webkitRequestFullscreen();
+		return g_canvas.webkitRequestFullscreen();
 	} else if ('mozRequestFullScreen' in g_canvas) {
-		g_canvas.mozRequestFullScreen();
+		return g_canvas.mozRequestFullScreen();
 	} else if ('msRequestFullscreen' in g_canvas) {
-		g_canvas.msRequestFullscreen();
+		return g_canvas.msRequestFullscreen();
 	} else {
-		throw new Error("fullscreen not supported");
+		throw new Error("request fullscreen not supported");
 	}
 };
 
-const goto = function(url) {
-	return () => setTimeout(() => window.location.href = url, 250);
-};
-
-function stop_start(o) {
-	o.stop_set.forEach(o => o.stop());
-	o.start_set.forEach(o => {
-		if (typeof(o) === 'function') {
-			o();
-		} else {
-			o.start();
-		}
-	});	
+const exit_fullscreen = function() {
+	if ('exitFullscreen' in document) {
+		return document.requestFullscreen();
+	} else if ('webkitExitFullscreen' in document) {
+		return document.webkitExitFullscreen();
+	} else if ('mozCancelFullScreen' in document) {
+		return document.mozCancelFullScreen();
+	} else if ('msExitFullscreen' in document) {
+		return document.msExitFullscreen();
+	} else {
+		throw new Error("exit fullscreen not supported");
+	}
 };
 
 //#endregion
 
 //#region sound
 
-function c_sound(audio_element) {
-	this.audio_element = audio_element;
-}
+// function c_sound(audio_element) {
+// 	this.audio_element = audio_element;
+// }
 
-c_sound.prototype.start = function() {
-	this.audio_element.play();
-};
+// c_sound.prototype.start = function() {
+// 	this.audio_element.play();
+// };
 
-const sound = function(audio_element) {
-	return new c_sound(audio_element);
-};
+// const sound = function(audio_element) {
+// 	return new c_sound(audio_element);
+// };
 
 //#endregion
 
@@ -515,8 +553,8 @@ export default {
 	fullscreen: fullscreen,
 	fullscreen_enabled: fullscreen_enabled,
 	request_fullscreen: request_fullscreen,
-	goto: goto,
-	sound: sound,
+	//goto: goto,
+	//sound: sound,
 	circle: circle,
 	rect: rect,
 	frame: frame,

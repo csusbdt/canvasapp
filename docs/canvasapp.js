@@ -43,19 +43,19 @@ function stop_start(o) {
 
 //#region fullscreen
 
-const fullscreen = function() {
-	if ('fullscreenElement' in document) {
-		return document.fullscreenElement === g_canvas;
-	} else if ('webkitFullscreenElement' in document) {
-		return document.webkitFullscreenElement === g_canvas;
-	} else if ('mozFullScreenElement' in document) {
-		return document.mozFullScreenElement === g_canvas;
-	} else if ('msFullscreenElement' in document) {
-		return document.msFullscreenElement === g_canvas;
-	} else {
-		return false;
-	}
-};
+// const fullscreen = function() {
+// 	if ('fullscreenElement' in document) {
+// 		return document.fullscreenElement === g_canvas;
+// 	} else if ('webkitFullscreenElement' in document) {
+// 		return document.webkitFullscreenElement === g_canvas;
+// 	} else if ('mozFullScreenElement' in document) {
+// 		return document.mozFullScreenElement === g_canvas;
+// 	} else if ('msFullscreenElement' in document) {
+// 		return document.msFullscreenElement === g_canvas;
+// 	} else {
+// 		return false;
+// 	}
+// };
 
 const fullscreen_enabled = function() {
 	return (
@@ -82,7 +82,7 @@ const request_fullscreen = function() {
 
 const exit_fullscreen = function() {
 	if ('exitFullscreen' in document) {
-		return document.requestFullscreen();
+		return document.exitFullscreen();
 	} else if ('webkitExitFullscreen' in document) {
 		return document.webkitExitFullscreen();
 	} else if ('mozCancelFullScreen' in document) {
@@ -306,6 +306,10 @@ c_loop.prototype.start = function() {
 c_loop.prototype.stop = function() {
 	remove_drawable(this);
 	remove_updatable(this);
+};
+
+c_loop.prototype.started = function() {
+	return drawables.includes(this);
 };
 
 c_loop.prototype.draw = function(ctx) {
@@ -550,10 +554,9 @@ requestAnimationFrame(animation_loop);
 export default {
 	version: '2021-06-29-a',
 	log: log,
-	fullscreen: fullscreen,
 	fullscreen_enabled: fullscreen_enabled,
 	request_fullscreen: request_fullscreen,
-	//goto: goto,
+	exit_fullscreen: exit_fullscreen,
 	//sound: sound,
 	circle: circle,
 	rect: rect,

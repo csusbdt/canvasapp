@@ -43,19 +43,23 @@ function stop_start(o) {
 
 //#region fullscreen
 
-// const fullscreen = function() {
-// 	if ('fullscreenElement' in document) {
-// 		return document.fullscreenElement === g_canvas;
-// 	} else if ('webkitFullscreenElement' in document) {
-// 		return document.webkitFullscreenElement === g_canvas;
-// 	} else if ('mozFullScreenElement' in document) {
-// 		return document.mozFullScreenElement === g_canvas;
-// 	} else if ('msFullscreenElement' in document) {
-// 		return document.msFullscreenElement === g_canvas;
-// 	} else {
-// 		return false;
-// 	}
-// };
+// function c_fullscreen() {
+
+// }
+
+const fullscreen_active = function() {
+	if ('fullscreenElement' in document) {
+		return document.fullscreenElement === g_canvas;
+	} else if ('webkitFullscreenElement' in document) {
+		return document.webkitFullscreenElement === g_canvas;
+	} else if ('mozFullScreenElement' in document) {
+		return document.mozFullScreenElement === g_canvas;
+	} else if ('msFullscreenElement' in document) {
+		return document.msFullscreenElement === g_canvas;
+	} else {
+		return false;
+	}
+};
 
 const fullscreen_enabled = function() {
 	return (
@@ -66,6 +70,7 @@ const fullscreen_enabled = function() {
 	);
 };
 
+// safari doesn't return a promise for requestFullscreen
 const request_fullscreen = function() {
 	if ('requestFullscreen' in g_canvas) {
 		return g_canvas.requestFullscreen();
@@ -555,6 +560,7 @@ export default {
 	version: '2021-06-29-a',
 	log: log,
 	fullscreen_enabled: fullscreen_enabled,
+	fullscreen_active: fullscreen_active,
 	request_fullscreen: request_fullscreen,
 	exit_fullscreen: exit_fullscreen,
 	//sound: sound,

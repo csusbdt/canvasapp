@@ -43,9 +43,14 @@ function stop_start(o) {
 
 //#region fullscreen
 
-// function c_fullscreen() {
-
-// }
+const fullscreen_enabled = function() {
+	return (
+		'requestFullscreen'       in g_canvas ||
+		'webkitRequestFullscreen' in g_canvas ||
+		'mozRequestFullScreen'    in g_canvas ||
+		'msRequestFullscreen'     in g_canvas 
+	);
+};
 
 const fullscreen_active = function() {
 	if ('fullscreenElement' in document) {
@@ -61,14 +66,29 @@ const fullscreen_active = function() {
 	}
 };
 
-const fullscreen_enabled = function() {
-	return (
-		'requestFullscreen'       in g_canvas ||
-		'webkitRequestFullscreen' in g_canvas ||
-		'mozRequestFullScreen'    in g_canvas ||
-		'msRequestFullscreen'     in g_canvas 
-	);
+let on_fullscreen = null;
+let on_windowed = null;
+
+const set_on_fullscreen = f => on_fullscreen = f; 
+const set_on_windowed   = f => on_windowed = f; 
+
+function on_fullscreen_change() {
+	if (fullscreen_active()) {
+		if (on_fullscreen !== null) on_fullscreen();
+	} else {
+		if (on_windowed !== null) on_windowed();
+	}
 };
+
+if ('onfullscreenchange' in document) {
+	document.onfullscreenchange = on_fullscreen_change;
+} else if ('webkitfullscreenchange' in document) {
+	document.webkitfullscreenchange = on_fullscreen_change;
+} else if ('mozfullscreenchange' in document) {
+	document.mozfullscreenchange = on_fullscreen_change;
+} else if ('MSFullscreenChange' in document) {
+	document.MSFullscreenChange = on_fullscreen_change;
+}
 
 // safari doesn't return a promise for requestFullscreen
 const request_fullscreen = function() {
@@ -375,6 +395,10 @@ c_touch.prototype.start = function() {
 	add_touchable(this);
 };
 
+c_touch.prototype.stop = function() {
+	remove_touchable(this);
+};
+
 c_touch.prototype.touch = function(x, y) {
 	for (let i = 0; i < this.shapes.length; ++i) {
 		if (this.shapes[i].inside(x - this.dx, y - this.dy)) {
@@ -520,6 +544,13 @@ const clear_touchables = function() {
 	touchables.length = 0;
 };
 
+const remove_touchable = function(o) {
+	const i = touchables.indexOf(o);
+	if (i !== -1) {
+		touchables.splice(i, 1);
+	}
+};
+
 const remove_drawable = function(o) {
 	const i = drawables.indexOf(o);
 	if (i !== -1) {
@@ -561,6 +592,8 @@ export default {
 	log: log,
 	fullscreen_enabled: fullscreen_enabled,
 	fullscreen_active: fullscreen_active,
+	set_on_fullscreen: set_on_fullscreen,
+	set_on_windowed: set_on_windowed,
 	request_fullscreen: request_fullscreen,
 	exit_fullscreen: exit_fullscreen,
 	//sound: sound,

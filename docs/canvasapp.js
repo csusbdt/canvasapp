@@ -376,9 +376,14 @@ function c_touch(shapes, dx, dy) {
 	this.shapes = shapes;
 	this.dx = dx;
 	this.dy = dy;
-	this.clear_touchables = true;
+	this.independent = false;
 	this.start_set = [];
 	this.stop_set  = [];
+}
+
+c_touch.prototype.make_independent = function() {
+	this.independent = true;
+	return this;
 }
 
 c_touch.prototype.starts = function(...os) {
@@ -402,8 +407,10 @@ c_touch.prototype.stop = function() {
 c_touch.prototype.touch = function(x, y) {
 	for (let i = 0; i < this.shapes.length; ++i) {
 		if (this.shapes[i].inside(x - this.dx, y - this.dy)) {
-			if (this.clear_touchables) {
-				clear_touchables();
+			if (this.independent) {
+				remove_touchable(this);
+			} else {
+				touchables = touchables.filter(o => !o.independent);
 			}
 			stop_start(this);
 			return true;

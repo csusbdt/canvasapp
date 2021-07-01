@@ -1,2 +1,4 @@
 # canvasapp
-a framework for building touch-oriented web apps that run in a single canvas element
+an example touch-oriented web app that runs in a canvas element
+
+[see the code running here](https://csusbdt.github.io/canvasapp/)

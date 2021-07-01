@@ -12,7 +12,7 @@ const exit_closing     = g.once(exit_closing_frames, 10);
 const exit_touch       = g.touch(g.rect(0, 0, 222, 126)).make_independent();
 
 exit_opening.starts(exit_loop, exit_touch);
-exit_closing.starts(() => window.location.assign('/home.html'));
+exit_closing.starts(() => window.location.assign('https://github.com/csusbdt/canvasapp/blob/main/README.md'));
 
 exit_touch.stops(exit_loop);
 

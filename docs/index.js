@@ -43,8 +43,8 @@ function start_splash() {
 //#endregion
 
 const red_loop_frames        = g.frames([i_red]);
-const red_opening_frames     = g.frames([i_red_1, i_red_2]);
-const red_closing_frames     = g.frames([i_red_2, i_red_1]);
+const red_opening_frames     = g.frames([i_red_2, i_red_1]);
+const red_closing_frames     = g.frames([i_red_1, i_red_2]);
 
 const red_loop        = g.loop(red_loop_frames, 10);
 
@@ -61,7 +61,7 @@ red_closing.starts(() => window.location.replace('red/'));
 
 red_touch.stops(red_loop);
 
-red_touch.starts(red_closing);
+red_touch.starts(s_blop, red_closing);
 
 window.addEventListener('load', e => {
 	start_splash();

@@ -304,10 +304,11 @@ c_once.prototype.update = function(dt) {
 };
 
 const once = function(frames, z_index = 10, dx = 0, dy = 0) {
-	if (!Array.isArray(frames)) {
-		frames = [frames];
+	if (Array.isArray(frames)) {
+		return new c_once(frames, z_index, dx, dy);
+	} else {
+		return new c_once([frames], z_index, dx, dy);
 	}
-	return new c_once(frames, z_index, dx, dy);
 };
 
 //#endregion
@@ -362,10 +363,11 @@ c_loop.prototype.update = function(dt) {
 };
 
 const loop = function(frames, z_index = 10, dx = 0, dy = 0) {
-	if (!Array.isArray(frames)) {
-		frames = [frames];
+	if (Array.isArray(frames)) {
+		return new c_loop(frames, z_index, dx, dy);
+	} else {
+		return new c_loop([frames], z_index, dx, dy);
 	}
-	return new c_loop(frames, z_index, dx, dy);
 };
 
 //#endregion
@@ -420,7 +422,11 @@ c_touch.prototype.touch = function(x, y) {
 };
 
 const touch = function(shapes, dx = 0, dy = 0) {
-	return new c_touch(shapes, dx, dy);
+	if (Array.isArray(shapes)) {
+		return new c_touch(shapes, dx, dy);
+	} else {
+		return new c_touch([shapes], dx, dy);
+	}
 };
 
 //#endregion
@@ -470,9 +476,9 @@ const canvas_coords = e => {
 	};
 };
 
-const drawables        = [];
-const updatables       = [];
-const touchables       = [];
+const drawables      = [];
+const updatables     = [];
+let touchables       = [];
 
 let audio_context = null;
 

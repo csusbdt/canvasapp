@@ -51,7 +51,7 @@ const red_loop        = g.loop(red_loop_frames, 10);
 const red_opening     = g.once(red_opening_frames, 10);
 const red_closing     = g.once(red_closing_frames, 10);
 
-const red_touch               = g.touch(g.rect(100, 100, 700, 325));
+const red_touch       = g.touch(g.rect(100, 100, 700, 325));
 
 const touches = () => {
 	red_touch.start();

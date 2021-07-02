@@ -41,7 +41,7 @@ function start_splash(...start_set) {
 			splash_windowed_touch.starts(o);	
 		});
 	} else {
-		start_set.forEach(o => o.start());
+		g.start(start_set);
 	}
 }
 

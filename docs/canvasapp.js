@@ -4,9 +4,8 @@ const log = function(...args) {
 	args.forEach(arg => console.log(arg));
 };
 
-function stop_start(o) {
-	o.stop_set.forEach(o => o.stop());
-	o.start_set.forEach(o => {
+function start(start_set) {
+	start_set.forEach(o => {
 		if (typeof(o) === 'function') {
 			o();
 		} else if ('play' in o) {
@@ -15,6 +14,20 @@ function stop_start(o) {
 			o.start();
 		}
 	});	
+}
+
+function stop_start(o) {
+	o.stop_set.forEach(o => o.stop());
+	start(o.start_set);
+	// o.start_set.forEach(o => {
+	// 	if (typeof(o) === 'function') {
+	// 		o();
+	// 	} else if ('play' in o) {
+	// 		o.play();
+	// 	} else {
+	// 		o.start();
+	// 	}
+	// });	
 };
 
 // const next = function(url) {
@@ -603,6 +616,7 @@ requestAnimationFrame(animation_loop);
 export default {
 	version: '2021-06-29-a',
 	log: log,
+	start: start,
 	fullscreen_enabled: fullscreen_enabled,
 	fullscreen_active: fullscreen_active,
 	set_on_fullscreen: set_on_fullscreen,

@@ -136,23 +136,49 @@ const exit_fullscreen = function() {
 
 //#region sound
 
-// function c_sound(audio_element) {
-// 	this.audio_element = audio_element;
-// }
+function c_sound(audio_element) {
+	this.audio_element = audio_element;
+	this.canplaythrough = false;
+	this.playing = false;
+	this.broken = false;
+	this.start_set = [];
+	this.stop_set  = [];
+	audio_element.oncanplaythrough = () => this.canplaythrough = true;
+	audio_element.onended = () => this.playing = false;
+	audio_element.onerror = () => this.broken = true;
+	audio_element.load();
+}
 
-// c_sound.prototype.start = function() {
-// 	this.audio_element.play();
-// };
+c_sound.prototype.starts = function(...os) {
+	os.forEach(o => this.start_set.push(o));
+	return this;
+};
 
-// const sound = function(audio_element) {
-// 	return new c_sound(audio_element);
-// };
+c_sound.prototype.stops = function(...os) {
+	os.forEach(o => this.stop_set.push(o));
+	return this;
+};
+
+c_sound.prototype.start = function() {
+	if (this.broken || this.playing) {
+		stop_start(this);
+	} else {
+		this.audio_element.play();
+		setTimeout(() => {
+			stop_start(this);
+		}, this.audio_element.duration * 1000 + 120);
+	}
+};
+
+const sound = function(audio_element) {
+	return new c_sound(audio_element);
+};
 
 //#endregion
 
 //#region circle
 
-export function c_circle(x, y, r) {
+function c_circle(x, y, r) {
 	this.x = x;
 	this.y = y;
 	this.r = r;
@@ -196,7 +222,7 @@ const rect = function(left, top, right, bottom) {
 
 //#region frame
 
-export function c_frame(image, duration = 1/8, x = 0, y = 0) {
+function c_frame(image, duration = 1/8, x = 0, y = 0) {
 	this.image = image;
 	this.duration = duration;
 	this.x = x;
@@ -269,7 +295,7 @@ const delay = function(t) {
 
 //#region once
 
-export function c_once(frames, z_index = 100, dx = 0, dy = 0) {
+function c_once(frames, z_index = 100, dx = 0, dy = 0) {
 	this.frames = frames;
 	this.z_index = z_index;
 	this.dx = dx;
@@ -623,7 +649,7 @@ export default {
 	set_on_windowed: set_on_windowed,
 	request_fullscreen: request_fullscreen,
 	exit_fullscreen: exit_fullscreen,
-	//sound: sound,
+	sound: sound,
 	circle: circle,
 	rect: rect,
 	frame: frame,

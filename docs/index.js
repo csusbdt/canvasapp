@@ -16,7 +16,7 @@ const red_closing     = g.once(red_closing_frames, 10);
 const red_touch       = g.touch(g.rect(340, 230, 933, 453));
 
 red_opening.starts(red_loop, red_touch);
-red_closing.starts(() => window.location.replace('red/'));
+red_closing.starts(g.delay(.01).starts(() => window.location.replace('red/')));
 
 red_touch.stops(red_loop);
 

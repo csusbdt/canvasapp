@@ -16,7 +16,7 @@ const blue_closing = g.once(blue_closing_frames, 10);
 const blue_touch = g.touch(g.circle(585, 330, 190));
 
 blue_opening.starts(blue_loop, blue_touch);
-blue_closing.starts(() => window.location.replace('../'));
+blue_closing.starts(g.delay(.01).starts(() => window.location.replace('../')));
 
 blue_touch.stops(blue_loop);
 

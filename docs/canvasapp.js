@@ -138,12 +138,10 @@ const exit_fullscreen = function() {
 
 function c_sound(audio_element) {
 	this.audio_element = audio_element;
-	this.canplaythrough = false;
 	this.playing = false;
 	this.broken = false;
 	this.start_set = [];
 	this.stop_set  = [];
-	audio_element.oncanplaythrough = () => this.canplaythrough = true;
 	audio_element.onended = () => this.playing = false;
 	audio_element.onerror = () => this.broken = true;
 	audio_element.load();
@@ -163,6 +161,7 @@ c_sound.prototype.start = function() {
 	if (this.broken || this.playing) {
 		stop_start(this);
 	} else {
+		this.playing = true;
 		this.audio_element.play();
 		setTimeout(() => {
 			stop_start(this);

@@ -1,4 +1,4 @@
-import g from './canvasapp.js';
+import g from '../canvasapp.js';
 
 const exit_loop_frames    = g.frames([i_exit]);
 const exit_opening_frames = g.frames([i_exit_2, i_exit_1]);

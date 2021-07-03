@@ -1,4 +1,4 @@
-import g from './canvasapp.js';
+import g from '../canvasapp.js';
 
 const splash_loop_frames      = g.frames([i_splash]);
 const fullscreen_loop_frames  = g.frames([i_fullscreen]);

@@ -4,6 +4,10 @@ const log = function(...args) {
 	args.forEach(arg => console.log(arg));
 };
 
+function stop(stop_set) {
+	stop_set.forEach(o => o.stop());
+}
+
 function start(start_set) {
 	start_set.forEach(o => {
 		if (typeof(o) === 'function') {
@@ -16,41 +20,10 @@ function start(start_set) {
 	});	
 }
 
-function stop_start(o) {
-	o.stop_set.forEach(o => o.stop());
-	start(o.start_set);
-	// o.start_set.forEach(o => {
-	// 	if (typeof(o) === 'function') {
-	// 		o();
-	// 	} else if ('play' in o) {
-	// 		o.play();
-	// 	} else {
-	// 		o.start();
-	// 	}
-	// });	
-};
-
-// const next = function(url) {
-// //	return () => setTimeout(() => window.location.href = url, 250);
-// 	return () => setTimeout(() => window.location.assign(url), 250);
+// function stop_start(o) {
+// 	stop(o.stop_set);
+// 	start(o.start_set);
 // };
-
-// const back = function(url) {
-// 	return () => setTimeout(() => window.history.back(), 250);
-// };
-			
-// const replace = function(url) {
-// 	return () => setTimeout(() => window.location.href = url, 250);
-// };
-
-// const goto = function(url) {
-// 	return () => setTimeout(() => window.location.href = url, 250);
-// };
-
-// const goto = function(url) {
-// 	return () => setTimeout(() => window.location.href = url, 250);
-// };
-
 
 //#endregion
 
@@ -164,7 +137,8 @@ c_sound.prototype.start = function() {
 		this.playing = true;
 		this.audio_element.play();
 		setTimeout(() => {
-			stop_start(this);
+			stop(this.stop_set);
+			start(this.start_set);
 		}, this.audio_element.duration * 1000 + 120);
 	}
 };
@@ -282,7 +256,8 @@ c_delay.prototype.update = function(dt) {
 	this.elapsed_time += dt;
 	if (this.elapsed_time > this.t) {
 		remove_updatable(this);
-		stop_start(this);
+		stop(this.stop_set);
+		start(this.start_set);
 	}
 };
 
@@ -336,7 +311,8 @@ c_once.prototype.update = function(dt) {
 			this.frame_index = 0;
 			remove_drawable(this);
 			remove_updatable(this);
-			stop_start(this);
+			stop(this.stop_set);
+			start(this.start_set);
 		}
 	}
 };
@@ -452,7 +428,8 @@ c_touch.prototype.touch = function(x, y) {
 			} else {
 				touchables = touchables.filter(o => !o.independent);
 			}
-			stop_start(this);
+			stop(this.stop_set);
+			start(this.start_set);
 			return true;
 		}
 	}

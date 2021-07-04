@@ -616,7 +616,12 @@ function animation_loop() {
 		}
 	} else {
 		if (dirty) {
-			ctx.drawImage(g_bg, 0, 0);
+			if (typeof(g_bg) === 'undefined') {
+				ctx.fillStyle = 'rgba(0, 0, 0)';
+				ctx.fillRect(0, 0, g_w, g_h);
+			} else {
+				ctx.drawImage(g_bg, 0, 0);
+			}
 			drawables.forEach(o => o.draw(ctx));
 			if (fullscreen_enabled() && !fullscreen_active()) {
 				if (fullscreen_image !== null) {

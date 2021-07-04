@@ -3,6 +3,11 @@ import start_exit   from '../scripts/exit.js';
 
 document.title = "blue level";
 
+g.set_splash_image(i_splash);
+g.set_fullscreen_image(i_fullscreen);
+g.set_splash_shapes([g.circle(642, 360, 290)]);
+g.set_fullscreen_shapes([g.circle(1210, 73, 50)]);
+
 const red_loop_frames    = g.frames([i_red_0]);
 const red_opening_frames = g.frames([i_red_2, i_red_1], .088);
 const red_closing_frames = g.frames([i_red_1, i_red_2], .088);

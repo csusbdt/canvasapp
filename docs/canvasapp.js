@@ -20,10 +20,23 @@ function start(start_set) {
 	});	
 }
 
-// function stop_start(o) {
-// 	stop(o.stop_set);
-// 	start(o.start_set);
-// };
+//#endregion
+
+//#region circle
+
+function c_circle(x, y, r) {
+	this.x = x;
+	this.y = y;
+	this.r = r;
+}
+
+c_circle.prototype.inside = function(x, y) {
+	return (this.x - x) * (this.x - x) + (this.y - y) * (this.y - y) < this.r * this.r;
+};
+
+const circle = function(x, y, r) {
+	return new c_circle(x, y, r);
+};
 
 //#endregion
 
@@ -52,29 +65,30 @@ const fullscreen_active = function() {
 	}
 };
 
-let on_fullscreen = null;
-let on_windowed = null;
+//let on_fullscreen = null;
+//let on_windowed = null;
 
-const set_on_fullscreen = f => on_fullscreen = f; 
-const set_on_windowed   = f => on_windowed = f; 
+//const set_on_fullscreen = f => on_fullscreen = f; 
+//const set_on_windowed   = f => on_windowed = f; 
 
-function on_fullscreen_change() {
-	if (fullscreen_active()) {
-		if (on_fullscreen !== null) on_fullscreen();
-	} else {
-		if (on_windowed !== null) on_windowed();
-	}
-};
+// function on_fullscreen_change() {
+// 	if (fullscreen_active()) {
 
-if ('onfullscreenchange' in document) {
-	document.onfullscreenchange = on_fullscreen_change;
-} else if ('webkitfullscreenchange' in document) {
-	document.webkitfullscreenchange = on_fullscreen_change;
-} else if ('mozfullscreenchange' in document) {
-	document.mozfullscreenchange = on_fullscreen_change;
-} else if ('MSFullscreenChange' in document) {
-	document.MSFullscreenChange = on_fullscreen_change;
-}
+// 		if (on_fullscreen !== null) on_fullscreen();
+// 	} else {
+// 		if (on_windowed !== null) on_windowed();
+// 	}
+// };
+
+// if ('onfullscreenchange' in document) {
+// 	document.onfullscreenchange = on_fullscreen_change;
+// } else if ('webkitfullscreenchange' in document) {
+// 	document.webkitfullscreenchange = on_fullscreen_change;
+// } else if ('mozfullscreenchange' in document) {
+// 	document.mozfullscreenchange = on_fullscreen_change;
+// } else if ('MSFullscreenChange' in document) {
+// 	document.MSFullscreenChange = on_fullscreen_change;
+// }
 
 // safari doesn't return a promise for requestFullscreen
 const request_fullscreen = function() {
@@ -91,19 +105,10 @@ const request_fullscreen = function() {
 	}
 };
 
-const exit_fullscreen = function() {
-	if ('exitFullscreen' in document) {
-		return document.exitFullscreen();
-	} else if ('webkitExitFullscreen' in document) {
-		return document.webkitExitFullscreen();
-	} else if ('mozCancelFullScreen' in document) {
-		return document.mozCancelFullScreen();
-	} else if ('msExitFullscreen' in document) {
-		return document.msExitFullscreen();
-	} else {
-		throw new Error("exit fullscreen not supported");
-	}
-};
+let splash_shapes = [circle(642, 360, 290)];
+let fullscreen_shapes = [circle(1210, 73, 50)];
+
+
 
 //#endregion
 
@@ -145,24 +150,6 @@ c_sound.prototype.start = function() {
 
 const sound = function(audio_element) {
 	return new c_sound(audio_element);
-};
-
-//#endregion
-
-//#region circle
-
-function c_circle(x, y, r) {
-	this.x = x;
-	this.y = y;
-	this.r = r;
-}
-
-c_circle.prototype.inside = function(x, y) {
-	return (this.x - x) * (this.x - x) + (this.y - y) * (this.y - y) < this.r * this.r;
-};
-
-const circle = function(x, y, r) {
-	return new c_circle(x, y, r);
 };
 
 //#endregion
@@ -498,15 +485,31 @@ let touchables       = [];
 let audio_context = null;
 
 const on_touch = p => {
-	// Getting audio context on first touch will enable fastest
-	// possible playout of sound on subsequent touch events.
 	if (audio_context === null) {
 		audio_context = new (window.AudioContext || window.webkitAudioContext)();
+		dirty = true;
+		if (fullscreen_enabled()) {
+			splash_shapes.forEach(shape => {
+				if (shape.inside(p.x, p.y)) {
+					request_fullscreen();
+					return;
+				}
+			});
+		}
+		return;
 	}
 	// I'm not sure the following is needed but I think phones might 
 	// suspend audio contexts to reduce battery drain.
 	if (audio_context.state === 'suspended') {
 		audio_context.resume();
+	}
+	if (fullscreen_enabled() && !fullscreen_active()) {
+		fullscreen_shapes.forEach(shape => {
+			if (shape.inside(p.x, p.y)) {
+				request_fullscreen();
+				return;
+			}
+		});
 	}
 	for (let i = 0; i < touchables.length; ++i) {
 		if (touchables[i].touch(p.x, p.y)) break;
@@ -597,15 +600,26 @@ const remove_updatable = function(o) {
 let previous_time = new Date().getTime() / 1000;
 
 function animation_loop() {
-	if (dirty) {
-		ctx.drawImage(g_bg, 0, 0, g_w, g_h, 0, 0, g_w, g_h);
-		drawables.forEach(o => o.draw(ctx));
-		dirty = false;
-	}
 	const current_time = new Date().getTime() / 1000;
-	let dt = current_time - previous_time;
+	if (audio_context === null) {
+		if (dirty) {
+			ctx.drawImage(g_bg, 0, 0);
+			ctx.drawImage(g_splash, 0, 0);
+			dirty = false;
+		}
+	} else {
+		if (dirty) {
+			ctx.drawImage(g_bg, 0, 0);
+			drawables.forEach(o => o.draw(ctx));
+			if (fullscreen_enabled() && !fullscreen_active()) {
+				ctx.drawImage(g_fullscreen, 0, 0);
+			}
+			dirty = false;
+		}
+		let dt = current_time - previous_time;
+		updatables.slice().forEach(o => o.update(dt));
+	}
 	previous_time = current_time;
-	updatables.slice().forEach(o => o.update(dt));
 	requestAnimationFrame(animation_loop);
 }
 
@@ -619,12 +633,12 @@ export default {
 	version: '2021-06-29-a',
 	log: log,
 	start: start,
-	fullscreen_enabled: fullscreen_enabled,
-	fullscreen_active: fullscreen_active,
-	set_on_fullscreen: set_on_fullscreen,
-	set_on_windowed: set_on_windowed,
-	request_fullscreen: request_fullscreen,
-	exit_fullscreen: exit_fullscreen,
+//	fullscreen_enabled: fullscreen_enabled,
+//	fullscreen_active: fullscreen_active,
+//	set_on_fullscreen: set_on_fullscreen,
+//	set_on_windowed: set_on_windowed,
+//	request_fullscreen: request_fullscreen,
+//	exit_fullscreen: exit_fullscreen,
 	sound: sound,
 	circle: circle,
 	rect: rect,

@@ -1,5 +1,4 @@
 import g            from '../canvasapp.js';
-import start_splash from '../scripts/splash.js';
 import start_exit   from '../scripts/exit.js';
 
 document.title = "red level";
@@ -24,5 +23,7 @@ const touches = () => {
 
 window.addEventListener('load', e => {
 	localStorage.setItem('current_level', 'red');
-	start_splash(start_exit, blue_opening, touches);
+	start_exit();
+	blue_opening.start();
+	touches();
 });

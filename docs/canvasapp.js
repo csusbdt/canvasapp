@@ -74,8 +74,12 @@ function c_sound(audio_element) {
 	this.broken = false;
 	this.start_set = [];
 	this.stop_set  = [];
-	audio_element.onended = () => this.playing = false;
-	audio_element.onerror = () => this.broken = true;
+	audio_element.addEventListener('ended', () => {
+		this.playing = false;
+	});
+	audio_element.addEventListener('error', () => {
+		this.broken = true
+	});
 	audio_element.load();
 }
 
@@ -258,6 +262,10 @@ c_once.prototype.stops = function(...os) {
 	return this;
 };
 
+c_once.prototype.started = function() {
+	return drawables.includes(this);
+};
+
 c_once.prototype.start = function() {
 	this.frame_index = 0;
 	this.elapsed_time = 0;
@@ -394,7 +402,7 @@ c_touch.prototype.touch = function(x, y) {
 			if (this.independent) {
 				remove_touchable(this);
 			} else {
-				touchables = touchables.filter(o => !o.independent);
+				touchables = touchables.filter(o => o.independent);
 			}
 			stop(this.stop_set);
 			start(this.start_set);

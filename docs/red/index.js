@@ -17,7 +17,7 @@ const door_opened         = g.loop(door_opened_frames);
 const door_opening        = g.once(door_opening_frames);
 const door_closing        = g.once(door_closing_frames);
 const door_open           = g.touch(g.rect(86, 149, 195, 270)).starts(g.sound(s_blop));
-const door_close          = g.touch(g.rect(50, 159, 80, 336)).starts(g.sound(s_tick));
+const door_close          = g.touch(g.rect(0, 159, 80, 336)).starts(g.sound(s_tick));
 const start_door_touch = () => {
 	if (door_closed.started() || door_closing.started()) {
 		door_open.start();
